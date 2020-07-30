@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Spring Schedule Admin管理平台</title>
+    <link href="/schedule/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+	    .table {table-layout:fixed;}
+	    .job-status {
+	        text-align:center;
+	        margin:0 auto;
+	    }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Spring Schedule Admin管理平台</a>
+        </div>
+    </nav>
+</div>
+<div class="container">
+    <div class="panel panel-default">
+        <table class="table table-bordered" id="jobtable">
+            <tr>
+                <td style="width: 32%;text-align:center;">Job</td>
+                <td style="width: 12%;text-align:center;">执行周期</td>
+                <td style="width: 9%;text-align:center;">initialDelay</td>
+                <td style="width: 10%;text-align:center;">下次执行时间</td>
+                <td style="width: 14%;text-align:center;">最近5次执行时间</td>
+                <td style="width: 8%;text-align:center;">状态</td>
+                <td style="width: 15%;text-align:center;">操作</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script src="/schedule/js/jquery.min.js"></script>
+<script type="text/javascript">
+    function stopJob(jobName) {
+        if(confirm('你确定要停止该任务吗')) {
+            $.ajax({
+                type: 'POST',
+                url: "/job/stop?jobName="+jobName,
+                success: function(data) {
+                    window.location.reload();
+                }
+            });
+        }
+    }
+
+    function runJob(jobName) {
+        if(confirm('你确定要执行该任务吗')) {
+            $.ajax({
+                type: 'POST',
+                url: "/job/run?jobName="+jobName,
+                success: function(data) {
+                    window.location.reload();
+                }
+            });
+        }
+    }
+
+    function startJob(jobName) {
+        $.ajax({
+            type: 'POST',
+            url: "/job/start?jobName="+jobName,
+            success: function(data) {
+                window.location.reload();
+            }
+        });
+    }
+    $(document).ready(function() {
+        $.ajax({
+            type: 'GET',
+            url: "/job/getList",
+            dataType: "json",
+            success: function(data) {
+                var list = data;
+                var html = "";
+                for(var i = 0; i < list.length; i++) {
+                    var row = list[i];
+                    html += "<tr>";
+                    html += "<td>"+row['name']+"</td>";
+                    html += "<td align='center'>"+row['period']+"</td>";
+                    html += "<td align='center'>"+row['initialDelay']+"</td>";
+                    html += "<td align='center'>"+(row['nextTime'])+"</td>";
+                    html += "<td align='center'>";
+                    for(var nt in row['nextTimes']) {
+                        html += "<div>"+row['nextTimes'][nt]+"</div>";
+                    }
+                    html += "</td>";
+                    html += "<td align='center' valign='middle'>"+row['status']+"</td>";
+                    html += "<td align='center'>";
+                    if(row['status'] == '运行中') {
+                        html += "<button class='btn btn-warning' type='button' onClick='stopJob(\""+row['name']+"\")'>停止</button>";
+                        html += "&nbsp;&nbsp;<button class='btn btn-primary' type='button' onClick='runJob(\""+row['name']+"\")'>执行</button>";
+                    } else {
+                        html += "<button class='btn btn-primary' type='button' onClick='startJob(\""+row['name']+"\")'>启动</button>";
+                    }
+                    html += "</td>";
+                }
+                $("#jobtable tr").after(html);
+            }
+        });
+    });
+</script>
+</body>
+</html>
