@@ -3,7 +3,8 @@ package com.github.schedule.admin;
 import com.github.schedule.admin.spring.DefaultJobNameFactory;
 import com.github.schedule.admin.spring.ManagedSchedulingConfigurer;
 import com.github.schedule.admin.spring.web.ScheduleAdminController;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -12,7 +13,13 @@ import org.springframework.context.annotation.Bean;
 public class ScheduleAdminAutoConfiguration {
 
     @Bean
-    public ManagedSchedulingConfigurer managedSchedulingConfigurer(@Autowired(required = false) JobNameFactory jobNameFactory) {
+    public ManagedSchedulingConfigurer managedSchedulingConfigurer(BeanFactory beanFactory) {
+        JobNameFactory jobNameFactory = null;
+        try {
+            jobNameFactory = beanFactory.getBean(JobNameFactory.class);
+        } catch (NoSuchBeanDefinitionException e) {
+            //ignore
+        }
         return new ManagedSchedulingConfigurer(jobNameFactory == null ? new DefaultJobNameFactory() : jobNameFactory);
     }
 
