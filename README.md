@@ -20,6 +20,14 @@ Spring Schedule Admin简单、易用、轻量级的Spring定时任务web管理�
 - <=4.1.x 没有测试
 
 ## 如何使用
+在项目中引入maven依赖。最新版本已经deploy到maven的中央仓库了 [查看最新版](https://search.maven.org/search?q=a:spring-schedule-admin)
+```xml
+  <dependency>
+      <groupId>com.github.hadoop002</groupId>
+      <artifactId>spring-schedule-admin</artifactId>
+      <version>使用最新版本</version>
+  </dependency>
+```
 直接在启动类上加上 @EnableScheduleAdmin
 ```java
 @EnableScheduleAdmin
