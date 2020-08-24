@@ -42,7 +42,7 @@ public class OrderApplication {
 
 ## Job管理页面
 启动应用，在浏览器中访问 /schedule/dashboard.html
-![Job管理页面](https://tangshiyi.oss-cn-shenzhen.aliyuncs.com/public/SpringScheduleAdmin.jpg)
+![Job管理页面](https://tangshiyi.oss-cn-shenzhen.aliyuncs.com/public/SpringScheduleAdmin.png)
 
 ## 参数说明
 - schedule.admin.enabled  是否启用Job管理功能，默认true
